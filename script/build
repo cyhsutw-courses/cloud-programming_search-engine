@@ -1,0 +1,12 @@
+#!/bin/sh
+
+BASEDIR=$(dirname "$0")
+
+rm -rf $BASEDIR/../target
+mkdir -p $BASEDIR/../target
+
+(
+  cd $BASEDIR/../index-builder
+  sbt package
+  cp target/scala-2.10/indexbuilder_2.10-1.0.jar ../target/spark.jar
+)
