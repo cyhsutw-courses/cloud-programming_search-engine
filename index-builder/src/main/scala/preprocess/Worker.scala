@@ -7,15 +7,7 @@ import org.apache.spark.SparkConf
 import scala.xml._
 
 
-object Main {
-  
-  private def unescape(str: String) : String = {
-    str.replaceAllLiterally("&lt;", "<")
-       .replaceAllLiterally("&gt;", ">")
-       .replaceAllLiterally("&amp;", "&")
-       .replaceAllLiterally("&quot;", "\"")
-       .replaceAllLiterally("&apos;", "'")
-  }
+object Worker {
   
   def main(args: Array[String]) {
     val inputPath = args(0)
