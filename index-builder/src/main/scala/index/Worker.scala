@@ -6,6 +6,7 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 import scala.collection.mutable._
 
+
 object Worker {
 
   def main(args: Array[String]) {

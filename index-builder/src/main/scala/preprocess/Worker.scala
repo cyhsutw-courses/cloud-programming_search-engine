@@ -7,8 +7,6 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 import scala.xml._
-import java.util.Base64
-import java.nio.charset.StandardCharsets
 
 
 class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] {
