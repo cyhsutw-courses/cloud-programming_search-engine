@@ -28,7 +28,7 @@ object Worker {
     
     val titleIDMap = maps.map { 
       case (line) => 
-        val parts = line.split("🐻")
+        val parts = line.split("|")
         if (parts.size == 2) {
           (parts(0), parts(1))
         } else {

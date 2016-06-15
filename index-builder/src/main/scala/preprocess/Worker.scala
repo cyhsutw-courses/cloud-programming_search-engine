@@ -57,7 +57,7 @@ object Worker {
       .cache
      maps.map(x => (x._1, x._2._2._1))
          .saveAsHadoopFile(outputDirDoc, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat])
-     maps.map(x => x._2._1 + "🐻" + x._1).saveAsTextFile(outputDirMap)
+     maps.map(x => x._2._1 + "|" + x._1).saveAsTextFile(outputDirMap)
     
     try { sc.stop } catch { case _ : Throwable => {} }
   }

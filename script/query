@@ -1,0 +1,5 @@
+#!/bin/sh
+
+BASEDIR=$(dirname "$0")
+
+java -cp $BASEDIR/../target/query.jar:$HIVE_HOME/lib/*:$HADOOP_HOME/share/hadoop/common/*:$HADOOP_HOME/share/hadoop/common/lib/*:$HADOOP_HOME/share/hadoop/mapreduce/* cp.query.App

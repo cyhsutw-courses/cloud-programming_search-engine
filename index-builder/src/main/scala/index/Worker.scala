@@ -36,22 +36,25 @@ object Worker {
         case (filePath, page) =>
           val fileId = filePath.split("/").last
           val matches = tokenPattern.findAllIn(page)
-          var arr = ListBuffer.empty[((String, String), List[Long])]
+          val tokenCount = tokenPattern.findAllIn(page).size
+
+          var arr = ListBuffer.empty[((String, String), (List[Long], Double))]
           while (matches.hasNext) {  
             matches.next()
-            arr.append(((matches.group(0).toLowerCase(), fileId), List(matches.start)))
+            arr.append(
+                (
+                    (matches.group(0).toLowerCase(), fileId), 
+                    (List(matches.start), 1.0 / tokenCount)
+                )
+            )
           }
           arr.toList
       }
-      .reduceByKey { (off1, off2) => off1 ++ off2 }
-      .map { x => (x._1._1, (x._1._2.toString(), x._2.mkString(","))) }
-      .groupByKey
-      .flatMap { x =>
-        x._2.map(tup => (x._1, tup)) 
-      }
-      .map { x =>
-        x._1 + ";" + x._2._1 + ";" + x._2._2
-      }
+      .reduceByKey { (off1, off2) => (off1._1 ++ off2._1, off1._2 + off2._2) }
+      .mapValues { x => x._2.toString() + ";" + x._1.mkString(",") }
+      .map { x => (x._1._1, x._1._2 + ";"+ x._2) }
+      .groupByKey()
+      .map(x => x._1 + ":" + x._2.size.toString +":" + x._2.mkString("/"))
       .saveAsTextFile(outputDir)
     
     try { sc.stop } catch { case _ : Throwable => {} }

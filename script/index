@@ -8,6 +8,4 @@ spark-submit --class preprocess.Worker --num-executors 30 $BASEDIR/../target/spa
 spark-submit --class index.Worker --num-executors 30 --deploy-mode cluster $BASEDIR/../target/spark.jar $2/raw $2/index
 spark-submit --class pagerank.Worker --num-executors 30 --deploy-mode cluster $BASEDIR/../target/spark.jar $1 $2/map $2/rank
 
-python $BASEDIR/create_table.py $2
-
-hive -f $BASEDIR/../target/create_table.sql
+$BASEDIR/insert $2

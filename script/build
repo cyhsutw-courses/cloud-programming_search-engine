@@ -10,3 +10,9 @@ mkdir -p $BASEDIR/../target
   sbt package
   cp target/scala-2.10/indexbuilder_2.10-1.0.jar ../target/spark.jar
 )
+
+(
+  cd $BASEDIR/../query
+  mvn package
+  cp target/query-0.0.1-SNAPSHOT.jar ../target/query.jar
+)
