@@ -39,14 +39,19 @@ object Worker {
           var arr = ListBuffer.empty[((String, String), List[Long])]
           while (matches.hasNext) {  
             matches.next()
-            arr.append(((matches.group(0), fileId), List(matches.start)))
+            arr.append(((matches.group(0).toLowerCase(), fileId), List(matches.start)))
           }
           arr.toList
       }
       .reduceByKey { (off1, off2) => off1 ++ off2 }
-      .map { x => (x._1._1, x._1._2.toString() + ":" + x._2.mkString(",")) }
+      .map { x => (x._1._1, (x._1._2.toString(), x._2.mkString(","))) }
       .groupByKey
-      .map { x => x._1 + ";" + x._2.size.toString() + ";" + x._2.mkString(";") }
+      .flatMap { x =>
+        x._2.map(tup => (x._1, tup)) 
+      }
+      .map { x =>
+        x._1 + ";" + x._2._1 + ";" + x._2._2
+      }
       .saveAsTextFile(outputDir)
     
     try { sc.stop } catch { case _ : Throwable => {} }
