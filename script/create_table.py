@@ -3,7 +3,7 @@ import os
 
 
 def main(argv):
-    root_dir = '/user/s103062512/{0}'.format(argv[0])
+    root_dir = '/user/s103062512/{0}'.format(argv[1])
     script_dir = os.path.dirname(os.path.realpath(__file__))
     with open(script_dir + '/../target/create_table.sql', 'w+') as f:
         f.write("DROP TABLE pagerank;\n")
