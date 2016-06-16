@@ -28,7 +28,7 @@ object Worker {
     
     val titleIDMap = maps.map { 
       case (line) => 
-        val parts = line.split("|")
+        val parts = line.split("\t")
         if (parts.size == 2) {
           (parts(0), parts(1))
         } else {
@@ -40,7 +40,7 @@ object Worker {
     val pages = ctx.textFile(inputPath, ctx.defaultParallelism * 9)
 
     val linkPattern = """\[\[[^\]]+\]\]""".r
-    val linkSplitPattern = "[#|]"
+    val linkSplitPattern = "[#\\|]"
     
     val parseStartTime = System.nanoTime()
     println("Start parsing")
@@ -48,8 +48,8 @@ object Worker {
     val adjMat = pages.flatMap { 
       case (page) =>
         val xmlElement = XML.loadString(page)
-        val title = (xmlElement \\ "title").text.capitalize
-        linkPattern.findAllIn(xmlElement.text)
+        val title = (xmlElement \\ "title").text.trim.capitalize
+        linkPattern.findAllIn(xmlElement.text.replaceAll("\\s+", " ").trim)
                    .toArray
                    .map { link => link.substring(2, link.length() - 2).split(linkSplitPattern) }
                    .filter { arr => arr.size > 0 }
@@ -128,7 +128,7 @@ object Worker {
 
     ranks.join(titleIDMap).map(x => (x._2._2, x._2._1))
          .sortBy(tup => (-tup._2, tup._1), true, ctx.defaultParallelism * 9)
-          .map(tup => tup._1 + ":" + tup._2.toString())
+          .map(tup => tup._1 + "\t" + tup._2.toString())
           .saveAsTextFile(outputDir)
 
     try { ctx.stop } catch { case _ : Throwable => {} }

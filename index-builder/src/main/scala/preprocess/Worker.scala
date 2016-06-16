@@ -8,13 +8,6 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.SparkConf
 import scala.xml._
 
-
-class RDDMultipleTextOutputFormat extends MultipleTextOutputFormat[Any, Any] {
-  override def generateFileNameForKeyValue(key: Any, value: Any, name: String): String = {
-    key.asInstanceOf[String]
-  }
-}
-
 object Worker {
   
   def main(args: Array[String]) {
@@ -49,15 +42,15 @@ object Worker {
     
     val maps = pages.map { line =>
       val xmlElement = XML.loadString(line)
-      val title = (xmlElement \\ "title").text.capitalize
-      val text = (xmlElement \\ "text").text
+      val title = (xmlElement \\ "title").text.trim.capitalize
+      val text = (xmlElement \\ "text").text.replaceAll("\\s+", " ").trim
       (title, (text, line))
     }.zipWithUniqueId
       .map(x => (x._2.toString(), x._1))
       .cache
-     maps.map(x => (x._1, x._2._2._1))
-         .saveAsHadoopFile(outputDirDoc, classOf[String], classOf[String], classOf[RDDMultipleTextOutputFormat])
-     maps.map(x => x._2._1 + "|" + x._1).saveAsTextFile(outputDirMap)
+     maps.map(x => x._1 +"\t" + x._2._2._1)
+         .saveAsTextFile(outputDirDoc)
+     maps.map(x => x._2._1 + "\t" + x._1).saveAsTextFile(outputDirMap)
     
     try { sc.stop } catch { case _ : Throwable => {} }
   }
