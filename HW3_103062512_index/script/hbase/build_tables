@@ -1,0 +1,17 @@
+disable 's103062512:map'
+drop    's103062512:map'
+create  's103062512:map', 'title'
+
+disable 's103062512:invertedindex'
+drop    's103062512:invertedindex'
+create  's103062512:invertedindex', 'idf', 'occurrences'
+
+disable 's103062512:pagerank'
+drop    's103062512:pagerank'
+create  's103062512:pagerank', 'score'
+
+disable 's103062512:doc'
+drop    's103062512:doc'
+create  's103062512:doc', 'content'
+
+exit
