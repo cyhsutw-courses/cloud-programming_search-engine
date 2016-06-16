@@ -4,6 +4,6 @@ BASEDIR=$(dirname "$0")
 
 hdfs dfs -rm -r -f $2
 
-spark-submit --class preprocess.Worker --num-executors 30 $BASEDIR/../target/spark.jar $1 $2/raw $2/map || echo 'Stop emittng that error!'
+spark-submit --class preprocess.Worker --num-executors 30 $BASEDIR/../target/spark.jar $1 $2/raw $2/map $2/id-title-map || echo 'Stop emittng that error!'
 spark-submit --class index.Worker --num-executors 30 --deploy-mode cluster $BASEDIR/../target/spark.jar $2/raw $2/index
 spark-submit --class pagerank.Worker --num-executors 30 --deploy-mode cluster $BASEDIR/../target/spark.jar $1 $2/map $2/rank

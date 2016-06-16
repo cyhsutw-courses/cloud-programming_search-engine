@@ -200,7 +200,8 @@ public class App {
 	        });
 			
 			
-//			Table contentTable = conn.getTable(TableName.valueOf("s103062512:doc".getBytes()));
+			Table contentTable = conn.getTable(TableName.valueOf("s103062512:doc".getBytes()));
+			Table mapTable = conn.getTable(TableName.valueOf("s103062512:map".getBytes()));
 			
 			for (Entry<String, Double> ds : docScore) {
 				Map<String, Integer[]> offs = docTermOccMap.get(ds.getKey());
@@ -219,10 +220,33 @@ public class App {
 				
 				imp = imp.subList(0, maxIndex);
 				
-				System.out.println(ds.getKey() + " : " + ds.getValue().toString());
+				String docId = ds.getKey();
+				
+				Get titleGet = new Get(docId.getBytes());
+				Result titleGetResult = mapTable.get(titleGet);
+				String title = new String(titleGetResult.getValue("title".getBytes(), "".getBytes()));
+				
+				Get contentGet = new Get(docId.getBytes());
+				Result contentGetResult = contentTable.get(contentGet);
+				String content = new String(contentGetResult.getValue("content".getBytes(), "".getBytes()));
+				
+				System.out.println(title + " - " + ds.getValue().toString());
+				System.out.println("------------------------------------------");
+				
+				for (Integer index : imp) {
+					int upper = index + 20;
+					int lower = index - 20;
+					
+					upper = Math.min(content.length() - 1, upper);
+					lower = Math.max(0, lower);
+					
+					System.out.println(content.substring(lower, upper));
+				}
+				System.out.println("\n");
 			}
 			
-					
+			mapTable.close();
+			contentTable.close();
 			pageRankTable.close();
 			docIdTitleMappingTable.close();
 			invertedIndexTable.close();

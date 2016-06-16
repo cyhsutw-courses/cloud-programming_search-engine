@@ -14,6 +14,7 @@ object Worker {
     val inputPath = args(0)
     val outputDirDoc = args(1)
     val outputDirMap = args(2)
+    val outputDirInvertedMap = args(3)
 
     val conf = new SparkConf().setAppName("Preprocessor")
     val sc = new SparkContext(conf)
@@ -51,6 +52,7 @@ object Worker {
      maps.map(x => x._1 +"\t" + x._2._2._1)
          .saveAsTextFile(outputDirDoc)
      maps.map(x => x._2._1 + "\t" + x._1).saveAsTextFile(outputDirMap)
+     maps.map(x => x._1 + "\t" + x._2._1).saveAsTextFile(outputDirInvertedMap)
     
     try { sc.stop } catch { case _ : Throwable => {} }
   }
